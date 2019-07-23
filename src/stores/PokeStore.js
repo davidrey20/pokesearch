@@ -7,6 +7,8 @@ import axios from "axios";
 import _ from "lodash";
 
 class PokeStore {
+  //variable to manage render after press start searching of Error, First Page or PokemonView
+  @observable componentToRender = "firstSearch";
   //Object with Data for Title
   @observable pokemonDataTable = {
     base_experience: 0,
@@ -45,13 +47,16 @@ class PokeStore {
           base_experience: response.data.base_experience,
           height: response.data.height,
           weight: response.data.weight,
-          type: response.data.types[0].type.name
+          type: _.capitalize(response.data.types[0].type.name)
         };
         this.isDataLoading = !this.isDataLoading;
-        // console.log(this.pokemonData);
+        this.componentToRender = "pokemonView";
       })
       .catch(error => {
+        console.log("error caught");
         console.log(error);
+        this.componentToRender = "error";
+        this.isDataLoading = !this.isDataLoading;
       });
 
     this.pokemonName = "";
